@@ -11,6 +11,7 @@ interface TodoState {
   addTodo: (todo: Omit<Todo, "id" | "createdAt">) => void;
   toggleTodo: (id: string) => void;
   deleteTodo: (id: string) => void;
+  updateTodo: (id: string, todo: Todo) => void;
   archiveTodo: (id: string) => void;
   addTag: (tag: Omit<Tag, "id">) => void;
   deleteTag: (id: string) => void;
@@ -62,6 +63,10 @@ export const useTodoStore = create<TodoState>()(
           }
           return state;
         }),
+      updateTodo: (id, todo) =>
+        set((state) => ({
+          todos: state.todos.map((t) => (t.id === id ? todo : t)),
+        })),
       deleteTodo: (id) =>
         set((state) => ({
           todos: state.todos.filter((todo) => todo.id !== id),

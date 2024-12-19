@@ -15,16 +15,26 @@ import {
 } from "@/components/ui/select";
 import { useTodoStore } from "@/store/todo-store";
 import { ThemeMode } from "@/types/todo";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
+import { Plus } from "lucide-react";
 
 interface SettingsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+const DEFAULT_PRESETS = [
+  "#8B5CF6",
+  "#F97316",
+  "#0EA5E9",
+  "#9b87f5",
+  "#7E69AB",
+];
+
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { settings, updateSettings } = useTodoStore();
+  const [customPresets, setCustomPresets] = useState<string[]>([]);
 
   const handleModeChange = (mode: ThemeMode) => {
     updateSettings({
@@ -52,6 +62,12 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     root.style.setProperty("--sidebar-primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
     root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
     root.style.setProperty("--sidebar-ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+  };
+
+  const addCustomPreset = () => {
+    if (!customPresets.includes(settings.theme.color)) {
+      setCustomPresets([...customPresets, settings.theme.color]);
+    }
   };
 
   // Apply theme changes
@@ -86,10 +102,42 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </div>
           <div className="space-y-2">
             <Label>Accent Color</Label>
+            <div className="grid grid-cols-5 gap-2">
+              {DEFAULT_PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  className="h-6 w-6 rounded-md border"
+                  style={{ backgroundColor: preset }}
+                  onClick={() => handleColorChange(preset)}
+                />
+              ))}
+            </div>
+            {customPresets.length > 0 && (
+              <div className="mt-2 grid grid-cols-5 gap-2">
+                {customPresets.map((preset) => (
+                  <button
+                    key={preset}
+                    className="h-6 w-6 rounded-md border"
+                    style={{ backgroundColor: preset }}
+                    onClick={() => handleColorChange(preset)}
+                  />
+                ))}
+              </div>
+            )}
             <HexColorPicker
               color={settings.theme.color}
               onChange={handleColorChange}
+              className="w-full"
             />
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-2 w-full"
+              onClick={addCustomPreset}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Save as Preset
+            </Button>
           </div>
         </div>
       </DialogContent>
