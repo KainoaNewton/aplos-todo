@@ -1,4 +1,4 @@
-import { Plus, Search, Inbox, Archive, Settings, Eye, ChartNoAxesGantt } from "lucide-react";
+import { Plus, Search, Inbox, Archive, Settings, Eye, Tag } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -10,6 +10,7 @@ import { AddTodoDialog } from "../dialogs/add-todo-dialog";
 import { AddViewDialog } from "../dialogs/add-view-dialog";
 import { AddTagDialog } from "../dialogs/add-tag-dialog";
 import { SettingsDialog } from "../dialogs/settings-dialog";
+import { useTodoStore } from "@/store/todo-store";
 import { 
   Command,
   CommandDialog,
@@ -28,6 +29,7 @@ export function SidebarMenuItems() {
   const [isAddTagOpen, setIsAddTagOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const { views, tags } = useTodoStore();
 
   const handleCommand = (command: string) => {
     switch (command) {
@@ -46,15 +48,15 @@ export function SidebarMenuItems() {
       case "create-tag":
         setIsAddTagOpen(true);
         break;
-      case "views":
-        navigate("/views");
-        break;
-      case "tags":
-        navigate("/tags");
-        break;
       case "settings":
         setIsSettingsOpen(true);
         break;
+      default:
+        if (command.startsWith("view-")) {
+          navigate(`/view/${command.replace("view-", "")}`);
+        } else if (command.startsWith("tag-")) {
+          navigate(`/tag/${command.replace("tag-", "")}`);
+        }
     }
     setIsCommandOpen(false);
   };
@@ -65,7 +67,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton
             onClick={() => setIsAddTodoOpen(true)}
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            className="w-full bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
           >
             <Plus className="h-4 w-4" />
             <span>Add Todo</span>
@@ -118,11 +120,11 @@ export function SidebarMenuItems() {
                 Create Todo
               </CommandItem>
               <CommandItem onSelect={() => handleCommand("create-view")}>
-                <ChartNoAxesGantt className="mr-2 h-4 w-4" />
+                <Eye className="mr-2 h-4 w-4" />
                 Create View
               </CommandItem>
               <CommandItem onSelect={() => handleCommand("create-tag")}>
-                <Plus className="mr-2 h-4 w-4" />
+                <Tag className="mr-2 h-4 w-4" />
                 Create Tag
               </CommandItem>
             </CommandGroup>
@@ -135,14 +137,24 @@ export function SidebarMenuItems() {
                 <Archive className="mr-2 h-4 w-4" />
                 Archive
               </CommandItem>
-              <CommandItem onSelect={() => handleCommand("views")}>
-                <ChartNoAxesGantt className="mr-2 h-4 w-4" />
-                Views
-              </CommandItem>
-              <CommandItem onSelect={() => handleCommand("tags")}>
-                <Eye className="mr-2 h-4 w-4" />
-                Tags
-              </CommandItem>
+              {views.map((view) => (
+                <CommandItem 
+                  key={view.id} 
+                  onSelect={() => handleCommand(`view-${view.id}`)}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  {view.name}
+                </CommandItem>
+              ))}
+              {tags.map((tag) => (
+                <CommandItem 
+                  key={tag.id} 
+                  onSelect={() => handleCommand(`tag-${tag.id}`)}
+                >
+                  <Tag className="mr-2 h-4 w-4" />
+                  {tag.name}
+                </CommandItem>
+              ))}
             </CommandGroup>
             <CommandGroup heading="Settings">
               <CommandItem onSelect={() => handleCommand("settings")}>

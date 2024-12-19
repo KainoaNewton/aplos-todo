@@ -100,4 +100,8 @@
   [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
     @apply bg-sidebar-accent text-sidebar-accent-foreground;
   }
+
+  button[class*="bg-primary"] {
+    @apply text-primary-foreground;
+  }
 }
