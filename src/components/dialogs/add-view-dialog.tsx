@@ -25,6 +25,7 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addView({
+      id: crypto.randomUUID(),
       name,
       filter: {
         tags: selectedTags,
