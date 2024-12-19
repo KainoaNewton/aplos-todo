@@ -1,4 +1,4 @@
-import { Plus, View, Pencil, Trash } from "lucide-react";
+import { ChartNoAxesGantt, Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
@@ -37,23 +37,10 @@ export function SidebarViews() {
             <SidebarMenuItem key={view.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/view/${view.id}`)}
-                className="w-full group relative"
+                className="w-full group relative hover:bg-accent"
               >
-                <View className="h-4 w-4 mr-2" />
+                <ChartNoAxesGantt className="h-4 w-4 mr-2" />
                 <span>{view.name}</span>
-                <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteView(view.id);
-                    }}
-                  >
-                    <Trash className="h-3 w-3" />
-                  </Button>
-                </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

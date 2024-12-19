@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTodoStore } from "@/store/todo-store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface AddViewDialogProps {
@@ -21,6 +21,13 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
   const [name, setName] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { tags, addView } = useTodoStore();
+
+  // Set all tags as selected by default when dialog opens
+  useEffect(() => {
+    if (open && tags.length > 0) {
+      setSelectedTags(tags.map(tag => tag.id));
+    }
+  }, [open, tags]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,11 +44,15 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
   };
 
   const handleTagToggle = (tagId: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tagId)
+    setSelectedTags((prev) => {
+      // If this is the last tag and we're trying to uncheck it, prevent the action
+      if (prev.length === 1 && prev.includes(tagId)) {
+        return prev;
+      }
+      return prev.includes(tagId)
         ? prev.filter((id) => id !== tagId)
-        : [...prev, tagId]
-    );
+        : [...prev, tagId];
+    });
   };
 
   return (

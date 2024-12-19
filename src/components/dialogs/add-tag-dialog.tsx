@@ -17,14 +17,14 @@ interface AddTagDialogProps {
 
 export function AddTagDialog({ open, onOpenChange }: AddTagDialogProps) {
   const [name, setName] = useState("");
-  const [color, setColor] = useState("#808080");
+  const [color, setColor] = useState("#888888"); // Default gray color
   const addTag = useTodoStore((state) => state.addTag);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addTag({ name, color });
     setName("");
-    setColor("#808080");
+    setColor("#888888");
     onOpenChange(false);
   };
 

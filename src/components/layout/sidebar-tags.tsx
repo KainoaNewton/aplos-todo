@@ -1,4 +1,4 @@
-import { Plus, Tag, Pencil, Trash } from "lucide-react";
+import { ChartNoAxesGantt, Plus, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 export function SidebarTags() {
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [editingTag, setEditingTag] = useState<string | null>(null);
-  const { tags, deleteTag } = useTodoStore();
+  const { tags } = useTodoStore();
   const navigate = useNavigate();
 
   return (
@@ -39,7 +39,7 @@ export function SidebarTags() {
             <SidebarMenuItem key={tag.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/tag/${tag.id}`)}
-                className="w-full group relative"
+                className="w-full group relative hover:bg-accent"
               >
                 <Tag className="h-4 w-4 mr-2" />
                 <span
@@ -47,30 +47,6 @@ export function SidebarTags() {
                   style={{ backgroundColor: tag.color }}
                 />
                 <span className="ml-2">{tag.name}</span>
-                <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditingTag(tag.id);
-                    }}
-                  >
-                    <Pencil className="h-3 w-3" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteTag(tag.id);
-                    }}
-                  >
-                    <Trash className="h-3 w-3" />
-                  </Button>
-                </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
