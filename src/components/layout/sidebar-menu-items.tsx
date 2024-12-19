@@ -1,4 +1,4 @@
-import { Plus, Search, Inbox, Archive, Settings, Eye, ChartNoAxesGantt } from "lucide-react";
+import { Plus, Search, Inbox, Archive, Settings, Eye, ChartNoAxesGantt, Tag } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -10,6 +10,7 @@ import { AddTodoDialog } from "../dialogs/add-todo-dialog";
 import { AddViewDialog } from "../dialogs/add-view-dialog";
 import { AddTagDialog } from "../dialogs/add-tag-dialog";
 import { SettingsDialog } from "../dialogs/settings-dialog";
+import { useTodoStore } from "@/store/todo-store";
 import { 
   Command,
   CommandDialog,
@@ -28,6 +29,7 @@ export function SidebarMenuItems() {
   const [isAddTagOpen, setIsAddTagOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const { views, tags } = useTodoStore();
 
   const handleCommand = (command: string) => {
     switch (command) {
@@ -45,12 +47,6 @@ export function SidebarMenuItems() {
         break;
       case "create-tag":
         setIsAddTagOpen(true);
-        break;
-      case "views":
-        navigate("/views");
-        break;
-      case "tags":
-        navigate("/tags");
         break;
       case "settings":
         setIsSettingsOpen(true);
@@ -74,7 +70,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton
             onClick={() => setIsCommandOpen(true)}
-            className="w-full"
+            className="w-full hover:bg-accent"
           >
             <Search className="h-4 w-4" />
             <span>Search</span>
@@ -83,7 +79,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton 
             onClick={() => navigate("/")} 
-            className="w-full"
+            className="w-full hover:bg-accent"
             data-active={location.pathname === "/"}
           >
             <Inbox className="h-4 w-4" />
@@ -93,7 +89,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton
             onClick={() => navigate("/archive")}
-            className="w-full"
+            className="w-full hover:bg-accent"
             data-active={location.pathname === "/archive"}
           >
             <Archive className="h-4 w-4" />
@@ -101,6 +97,42 @@ export function SidebarMenuItems() {
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
+
+      <div className="mt-4">
+        <div className="px-3 text-xs font-semibold text-muted-foreground">Navigation</div>
+        <SidebarMenu>
+          {views.map((view) => (
+            <SidebarMenuItem key={view.id}>
+              <SidebarMenuButton
+                onClick={() => navigate(`/view/${view.id}`)}
+                className="w-full hover:bg-accent"
+                data-active={location.pathname === `/view/${view.id}`}
+              >
+                <ChartNoAxesGantt className="h-4 w-4" />
+                <span>{view.name}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+          {tags.map((tag) => (
+            <SidebarMenuItem key={tag.id}>
+              <SidebarMenuButton
+                onClick={() => navigate(`/tag/${tag.id}`)}
+                className="w-full hover:bg-accent"
+                data-active={location.pathname === `/tag/${tag.id}`}
+              >
+                <Tag className="h-4 w-4" />
+                <span className="flex items-center gap-2">
+                  <div
+                    className="h-2 w-2 rounded-full"
+                    style={{ backgroundColor: tag.color }}
+                  />
+                  {tag.name}
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </div>
 
       <AddTodoDialog open={isAddTodoOpen} onOpenChange={setIsAddTodoOpen} />
       <AddViewDialog open={isAddViewOpen} onOpenChange={setIsAddViewOpen} />

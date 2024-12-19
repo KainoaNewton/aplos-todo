@@ -124,14 +124,17 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                       className="h-6 w-6 rounded-md border cursor-pointer hover:ring-2 hover:ring-primary/50"
                       style={{ backgroundColor: preset }}
                       onClick={() => handleColorChange(preset)}
+                    />
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteCustomPreset(preset);
+                      }}
                     >
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 rounded-md transition-opacity">
-                        <X className="h-4 w-4 text-white" onClick={(e) => {
-                          e.stopPropagation();
-                          deleteCustomPreset(preset);
-                        }} />
-                      </div>
-                    </button>
+                      <div className="absolute inset-0 bg-black/50 rounded-md" />
+                      <X className="h-4 w-4 text-white relative z-10 cursor-pointer" />
+                    </div>
                   </div>
                 ))}
               </div>
