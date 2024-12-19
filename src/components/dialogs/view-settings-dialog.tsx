@@ -13,7 +13,6 @@ import { View } from "@/types/todo";
 import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
-import { DeleteViewDialog } from "./delete-view-dialog";
 import { useToast } from "@/hooks/use-toast";
 
 interface ViewSettingsDialogProps {
@@ -27,12 +26,12 @@ export function ViewSettingsDialog({
   onOpenChange,
   view,
 }: ViewSettingsDialogProps) {
-  const { tags, views, addView } = useTodoStore();
+  const { tags, views, addView, deleteView } = useTodoStore();
+  const { toast } = useToast();
   const [name, setName] = useState(view.name);
   const [selectedTags, setSelectedTags] = useState<string[]>(
     view.filter.tags || []
   );
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +47,31 @@ export function ViewSettingsDialog({
     onOpenChange(false);
   };
 
+  const handleDelete = () => {
+    const deletedView = { ...view };
+    deleteView(view.id);
+    
+    toast({
+      title: "View deleted",
+      description: "The view has been deleted",
+      action: (
+        <Button
+          onClick={() => {
+            addView(deletedView);
+            toast({
+              title: "View restored",
+              description: "The view has been restored",
+            });
+          }}
+        >
+          Undo
+        </Button>
+      ),
+    });
+    
+    onOpenChange(false);
+  };
+
   const toggleTag = (tagId: string) => {
     setSelectedTags((prev) =>
       prev.includes(tagId)
@@ -57,60 +81,53 @@ export function ViewSettingsDialog({
   };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>View Settings</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="View name"
-              />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>View Settings</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="View name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Tags</Label>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant={selectedTags.includes(tag.id) ? "default" : "outline"}
+                  className={cn(
+                    "cursor-pointer transition-colors",
+                    selectedTags.includes(tag.id)
+                      ? "hover:bg-primary/80"
+                      : "hover:bg-muted"
+                  )}
+                  onClick={() => toggleTag(tag.id)}
+                >
+                  {tag.name}
+                </Badge>
+              ))}
             </div>
-            <div className="space-y-2">
-              <Label>Tags</Label>
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
-                  <Badge
-                    key={tag.id}
-                    variant={selectedTags.includes(tag.id) ? "default" : "outline"}
-                    className={cn(
-                      "cursor-pointer transition-colors",
-                      selectedTags.includes(tag.id)
-                        ? "hover:bg-primary/80"
-                        : "hover:bg-muted"
-                    )}
-                    onClick={() => toggleTag(tag.id)}
-                  >
-                    {tag.name}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-            <DialogFooter className="flex justify-between sm:justify-between">
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => setIsDeleteDialogOpen(true)}
-              >
-                Delete
-              </Button>
-              <Button type="submit">Save changes</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-      <DeleteViewDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        viewId={view.id}
-      />
-    </>
+          </div>
+          <DialogFooter className="flex justify-between sm:justify-between">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+            <Button type="submit">Save changes</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
