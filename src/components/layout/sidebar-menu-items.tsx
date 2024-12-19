@@ -137,30 +137,32 @@ export function SidebarMenuItems() {
                 <Archive className="mr-2 h-4 w-4" />
                 Archive
               </CommandItem>
+              <CommandItem onSelect={() => handleCommand("settings")}>
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </CommandItem>
+            </CommandGroup>
+            <CommandGroup heading="Views">
               {views.map((view) => (
                 <CommandItem 
                   key={view.id} 
                   onSelect={() => handleCommand(`view-${view.id}`)}
                 >
                   <Eye className="mr-2 h-4 w-4" />
-                  View | {view.name}
+                  {view.name}‎ 
                 </CommandItem>
               ))}
+            </CommandGroup>
+            <CommandGroup heading="Tags">
               {tags.map((tag) => (
                 <CommandItem 
                   key={tag.id} 
                   onSelect={() => handleCommand(`tag-${tag.id}`)}
                 >
                   <Tag className="mr-2 h-4 w-4" />
-                  Tag | {tag.name}
+                  {tag.name}
                 </CommandItem>
               ))}
-            </CommandGroup>
-            <CommandGroup heading="Settings">
-              <CommandItem onSelect={() => handleCommand("settings")}>
-                <Settings className="mr-2 h-4 w-4" />
-                Open Settings
-              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
