@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useTodoStore } from "@/store/todo-store";
 import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AddViewDialogProps {
   open: boolean;
@@ -21,37 +22,49 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
   const [name, setName] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { tags, addView } = useTodoStore();
+  const { toast } = useToast();
 
-  // Set all tags as selected by default when dialog opens
   useEffect(() => {
-    if (open && tags.length > 0) {
-      setSelectedTags(tags.map(tag => tag.id));
+    if (open) {
+      setName("");
+      setSelectedTags(tags.length > 0 ? tags.map(tag => tag.id) : []);
     }
   }, [open, tags]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addView({
+    
+    if (!name.trim()) {
+      toast({
+        title: "Error",
+        description: "View name cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newView = {
       id: crypto.randomUUID(),
-      name,
+      name: name.trim(),
       filter: {
         tags: selectedTags,
       },
+    };
+
+    addView(newView);
+    toast({
+      title: "Success",
+      description: "View created successfully",
     });
-    setName("");
-    setSelectedTags([]);
     onOpenChange(false);
   };
 
   const handleTagToggle = (tagId: string) => {
     setSelectedTags((prev) => {
-      // If this is the last tag and we're trying to uncheck it, prevent the action
-      if (prev.length === 1 && prev.includes(tagId)) {
-        return prev;
+      if (prev.includes(tagId)) {
+        return prev.filter((id) => id !== tagId);
       }
-      return prev.includes(tagId)
-        ? prev.filter((id) => id !== tagId)
-        : [...prev, tagId];
+      return [...prev, tagId];
     });
   };
 
@@ -71,7 +84,7 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
+              placeholder="Enter view name"
             />
           </div>
           <div className="space-y-2">
