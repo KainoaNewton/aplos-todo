@@ -1,4 +1,4 @@
-import { ChartNoAxesGantt, Plus, Trash } from "lucide-react";
+import { ChartNoAxesGantt, MoreVertical, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
@@ -12,10 +12,12 @@ import { useTodoStore } from "@/store/todo-store";
 import { useState } from "react";
 import { AddViewDialog } from "@/components/dialogs/add-view-dialog";
 import { useNavigate } from "react-router-dom";
+import { ViewSettingsDialog } from "../dialogs/view-settings-dialog";
 
 export function SidebarViews() {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const { views, deleteView } = useTodoStore();
+  const [editingView, setEditingView] = useState<string | null>(null);
+  const { views } = useTodoStore();
   const navigate = useNavigate();
 
   return (
@@ -39,14 +41,34 @@ export function SidebarViews() {
                 onClick={() => navigate(`/view/${view.id}`)}
                 className="w-full group relative hover:bg-accent"
               >
-                <ChartNoAxesGantt className="h-4 w-4 mr-2" />
-                <span>{view.name}</span>
+                <div className="flex items-center flex-1">
+                  <ChartNoAxesGantt className="h-4 w-4 mr-2" />
+                  <span>{view.name}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingView(view.id);
+                  }}
+                  className="h-6 w-6 opacity-0 group-hover:opacity-100 absolute right-1 hover:bg-accent"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
       <AddViewDialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen} />
+      {editingView && (
+        <ViewSettingsDialog
+          open={!!editingView}
+          onOpenChange={() => setEditingView(null)}
+          view={views.find((v) => v.id === editingView)!}
+        />
+      )}
     </SidebarGroup>
   );
 }
