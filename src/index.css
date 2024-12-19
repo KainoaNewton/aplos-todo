@@ -32,7 +32,7 @@
     --input: 240 5.9% 90%;
     --ring: 262 80% 75%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -90,24 +90,42 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 
   [data-active="true"] {
-    @apply bg-primary/20 text-primary;
+    @apply bg-primary/20 text-primary shadow-sm transition-all duration-200;
   }
 
   [data-sidebar="menu-button"]:hover:not([data-active="true"]) {
-    @apply bg-sidebar-accent text-sidebar-accent-foreground;
+    @apply bg-sidebar-accent text-sidebar-accent-foreground transition-all duration-200;
   }
 
   button[class*="bg-primary"] {
-    @apply text-primary-foreground;
+    @apply text-primary-foreground shadow-sm transition-all duration-200 hover:shadow-md active:shadow-sm;
   }
 
   /* Add active states for views and tags */
   a[href^="/view/"].active,
   a[href^="/tag/"].active {
-    @apply bg-primary/20 text-primary;
+    @apply bg-primary/20 text-primary shadow-sm transition-all duration-200;
+  }
+
+  /* Enhance dialog animations */
+  [data-state="open"][role="dialog"] {
+    @apply animate-in fade-in-0 zoom-in-95 duration-200;
+  }
+
+  /* Enhance button interactions */
+  button, 
+  [role="button"] {
+    @apply transition-all duration-200;
+  }
+
+  /* Improve form elements */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    @apply transition-all duration-200 focus:ring-2 focus:ring-primary/20;
   }
 }
