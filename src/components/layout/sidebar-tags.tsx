@@ -37,7 +37,7 @@ export function SidebarTags() {
             <SidebarMenuItem key={tag.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/tag/${tag.id}`)}
-                className="w-full pl-8"
+                className="w-full"
               >
                 <span
                   className="h-2 w-2 rounded-full"

@@ -20,7 +20,7 @@ export function SidebarViews() {
 
   return (
     <SidebarGroup>
-      <div className="flex items-center justify-between px-4">
+      <div className="flex items-center justify-between">
         <SidebarGroupLabel className="text-sm font-medium">Views</SidebarGroupLabel>
         <Button
           variant="ghost"

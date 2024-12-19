@@ -9,8 +9,9 @@ import { SettingsDialog } from "@/components/dialogs/settings-dialog";
 import { SidebarMenuItems } from "./sidebar-menu-items";
 import { SidebarViews } from "./sidebar-views";
 import { SidebarTags } from "./sidebar-tags";
+import { Separator } from "@/components/ui/separator"
 import { Settings } from "lucide-react";
-
+import { PanelRight } from "lucide-react";
 export function AppSidebar() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -19,7 +20,7 @@ export function AppSidebar() {
       <Sidebar>
         <SidebarHeader className="p-6">
           <div className="flex items-center justify-between">
-            <span className="text-xl font-semibold tracking-tight">Todo App</span>
+            <span className="text-xl font-semibold tracking-tight">Aplos</span>
             <Button
               onClick={() => setIsSettingsOpen(true)}
               variant="ghost"
@@ -32,7 +33,9 @@ export function AppSidebar() {
         </SidebarHeader>
         <SidebarContent className="px-4">
           <SidebarMenuItems />
+          <Separator />
           <SidebarViews />
+          <Separator />
           <SidebarTags />
         </SidebarContent>
       </Sidebar>
