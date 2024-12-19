@@ -1,4 +1,4 @@
-import { Plus, Search, Inbox, Archive } from "lucide-react";
+import { Plus, Search, Inbox, Archive, Settings, Eye, ChartNoAxesGantt } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -7,6 +7,9 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { AddTodoDialog } from "../dialogs/add-todo-dialog";
+import { AddViewDialog } from "../dialogs/add-view-dialog";
+import { AddTagDialog } from "../dialogs/add-tag-dialog";
+import { SettingsDialog } from "../dialogs/settings-dialog";
 import { 
   Command,
   CommandDialog,
@@ -21,7 +24,40 @@ export function SidebarMenuItems() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isAddTodoOpen, setIsAddTodoOpen] = useState(false);
+  const [isAddViewOpen, setIsAddViewOpen] = useState(false);
+  const [isAddTagOpen, setIsAddTagOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+
+  const handleCommand = (command: string) => {
+    switch (command) {
+      case "create-todo":
+        setIsAddTodoOpen(true);
+        break;
+      case "inbox":
+        navigate("/");
+        break;
+      case "archive":
+        navigate("/archive");
+        break;
+      case "create-view":
+        setIsAddViewOpen(true);
+        break;
+      case "create-tag":
+        setIsAddTagOpen(true);
+        break;
+      case "views":
+        navigate("/views");
+        break;
+      case "tags":
+        navigate("/tags");
+        break;
+      case "settings":
+        setIsSettingsOpen(true);
+        break;
+    }
+    setIsCommandOpen(false);
+  };
 
   return (
     <>
@@ -38,7 +74,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton
             onClick={() => setIsCommandOpen(true)}
-            className="w-full hover:bg-sidebar-accent"
+            className="w-full"
           >
             <Search className="h-4 w-4" />
             <span>Search</span>
@@ -47,7 +83,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton 
             onClick={() => navigate("/")} 
-            className="w-full hover:bg-sidebar-accent"
+            className="w-full"
             data-active={location.pathname === "/"}
           >
             <Inbox className="h-4 w-4" />
@@ -57,7 +93,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton
             onClick={() => navigate("/archive")}
-            className="w-full hover:bg-sidebar-accent"
+            className="w-full"
             data-active={location.pathname === "/archive"}
           >
             <Archive className="h-4 w-4" />
@@ -65,16 +101,54 @@ export function SidebarMenuItems() {
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
+
       <AddTodoDialog open={isAddTodoOpen} onOpenChange={setIsAddTodoOpen} />
+      <AddViewDialog open={isAddViewOpen} onOpenChange={setIsAddViewOpen} />
+      <AddTagDialog open={isAddTagOpen} onOpenChange={setIsAddTagOpen} />
+      <SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
+      
       <CommandDialog open={isCommandOpen} onOpenChange={setIsCommandOpen}>
         <Command>
           <CommandInput placeholder="Type a command or search..." />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
-            <CommandGroup heading="Suggestions">
-              <CommandItem>Calendar</CommandItem>
-              <CommandItem>Search Todos...</CommandItem>
-              <CommandItem>Create Todo</CommandItem>
+            <CommandGroup heading="Actions">
+              <CommandItem onSelect={() => handleCommand("create-todo")}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Todo
+              </CommandItem>
+              <CommandItem onSelect={() => handleCommand("create-view")}>
+                <ChartNoAxesGantt className="mr-2 h-4 w-4" />
+                Create View
+              </CommandItem>
+              <CommandItem onSelect={() => handleCommand("create-tag")}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Tag
+              </CommandItem>
+            </CommandGroup>
+            <CommandGroup heading="Navigation">
+              <CommandItem onSelect={() => handleCommand("inbox")}>
+                <Inbox className="mr-2 h-4 w-4" />
+                Inbox
+              </CommandItem>
+              <CommandItem onSelect={() => handleCommand("archive")}>
+                <Archive className="mr-2 h-4 w-4" />
+                Archive
+              </CommandItem>
+              <CommandItem onSelect={() => handleCommand("views")}>
+                <ChartNoAxesGantt className="mr-2 h-4 w-4" />
+                Views
+              </CommandItem>
+              <CommandItem onSelect={() => handleCommand("tags")}>
+                <Eye className="mr-2 h-4 w-4" />
+                Tags
+              </CommandItem>
+            </CommandGroup>
+            <CommandGroup heading="Settings">
+              <CommandItem onSelect={() => handleCommand("settings")}>
+                <Settings className="mr-2 h-4 w-4" />
+                Open Settings
+              </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
