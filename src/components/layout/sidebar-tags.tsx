@@ -20,12 +20,13 @@ export function SidebarTags() {
 
   return (
     <SidebarGroup>
-      <div className="flex items-center justify-between px-4">
-        <SidebarGroupLabel className="text-sm font-medium">Tags</SidebarGroupLabel>
+      <div className="flex items-center justify-between">
+        <SidebarGroupLabel className="text-base font-medium">Tags</SidebarGroupLabel>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsTagDialogOpen(true)}
+          className="h-8 w-8 hover:bg-sidebar-accent"
         >
           <Plus className="h-4 w-4" />
         </Button>
@@ -36,7 +37,7 @@ export function SidebarTags() {
             <SidebarMenuItem key={tag.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/tag/${tag.id}`)}
-                className="w-full pl-6"
+                className="w-full pl-8"
               >
                 <span
                   className="h-2 w-2 rounded-full"

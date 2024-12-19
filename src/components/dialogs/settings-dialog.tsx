@@ -17,7 +17,7 @@ import { useTodoStore } from "@/store/todo-store";
 import { ThemeMode } from "@/types/todo";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { Plus } from "lucide-react";
+import { Plus, X } from "lucide-react";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -70,6 +70,10 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     }
   };
 
+  const deleteCustomPreset = (preset: string) => {
+    setCustomPresets(customPresets.filter((p) => p !== preset));
+  };
+
   // Apply theme changes
   useEffect(() => {
     const root = window.document.documentElement;
@@ -115,12 +119,19 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             {customPresets.length > 0 && (
               <div className="mt-2 grid grid-cols-5 gap-2">
                 {customPresets.map((preset) => (
-                  <button
-                    key={preset}
-                    className="h-6 w-6 rounded-md border"
-                    style={{ backgroundColor: preset }}
-                    onClick={() => handleColorChange(preset)}
-                  />
+                  <div key={preset} className="relative group">
+                    <button
+                      className="h-6 w-6 rounded-md border"
+                      style={{ backgroundColor: preset }}
+                      onClick={() => handleColorChange(preset)}
+                    />
+                    <button
+                      onClick={() => deleteCustomPreset(preset)}
+                      className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
                 ))}
               </div>
             )}
