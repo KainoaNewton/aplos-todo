@@ -17,19 +17,20 @@ export function AppSidebar() {
   return (
     <>
       <Sidebar>
-        <SidebarHeader className="p-4">
+        <SidebarHeader className="p-6">
           <div className="flex items-center justify-between">
-            <span className="text-lg font-semibold">Todo App</span>
+            <span className="text-xl font-semibold tracking-tight">Todo App</span>
             <Button
               onClick={() => setIsSettingsOpen(true)}
               variant="ghost"
               size="icon"
+              className="hover:bg-sidebar-accent"
             >
               <Settings className="h-4 w-4" />
             </Button>
           </div>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="px-4">
           <SidebarMenuItems />
           <SidebarViews />
           <SidebarTags />
