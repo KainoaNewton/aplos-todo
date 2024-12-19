@@ -26,18 +26,24 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
   useEffect(() => {
     if (open && tags.length > 0) {
       setSelectedTags(tags.map(tag => tag.id));
+    } else if (open) {
+      // If there are no tags, initialize with empty array
+      setSelectedTags([]);
     }
   }, [open, tags]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!name.trim()) return;
+
     addView({
       id: crypto.randomUUID(),
-      name,
+      name: name.trim(),
       filter: {
         tags: selectedTags,
       },
     });
+    
     setName("");
     setSelectedTags([]);
     onOpenChange(false);
