@@ -11,7 +11,7 @@ import {
 import { useTodoStore } from "@/store/todo-store";
 import { useState } from "react";
 import { AddViewDialog } from "@/components/dialogs/add-view-dialog";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ViewSettingsDialog } from "../dialogs/view-settings-dialog";
 
 export function SidebarViews() {
@@ -19,6 +19,7 @@ export function SidebarViews() {
   const [editingView, setEditingView] = useState<string | null>(null);
   const { views } = useTodoStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <SidebarGroup>
@@ -40,6 +41,7 @@ export function SidebarViews() {
               <SidebarMenuButton
                 onClick={() => navigate(`/view/${view.id}`)}
                 className="w-full group/item relative hover:bg-accent"
+                data-active={location.pathname === `/view/${view.id}`}
               >
                 <div className="flex items-center flex-1">
                   <ChartNoAxesGantt className="h-4 w-4 mr-2" />

@@ -1,4 +1,4 @@
-import { MoreVertical, Plus, Settings, Tag } from "lucide-react";
+import { MoreVertical, Plus, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
@@ -12,15 +12,14 @@ import { useTodoStore } from "@/store/todo-store";
 import { useState } from "react";
 import { AddTagDialog } from "@/components/dialogs/add-tag-dialog";
 import { EditTagDialog } from "@/components/dialogs/edit-tag-dialog";
-import { useNavigate } from "react-router-dom";
-import { DeleteTagDialog } from "@/components/dialogs/delete-tag-dialog";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export function SidebarTags() {
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [editingTag, setEditingTag] = useState<string | null>(null);
-  const [deletingTag, setDeletingTag] = useState<string | null>(null);
   const { tags } = useTodoStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <SidebarGroup>
@@ -42,6 +41,7 @@ export function SidebarTags() {
               <SidebarMenuButton
                 onClick={() => navigate(`/tag/${tag.id}`)}
                 className="w-full group/item relative hover:bg-accent"
+                data-active={location.pathname === `/tag/${tag.id}`}
               >
                 <div className="flex items-center flex-1">
                   <Tag className="h-4 w-4 mr-2" />
@@ -73,13 +73,6 @@ export function SidebarTags() {
           open={!!editingTag}
           onOpenChange={() => setEditingTag(null)}
           tagId={editingTag}
-        />
-      )}
-      {deletingTag && (
-        <DeleteTagDialog
-          open={!!deletingTag}
-          onOpenChange={() => setDeletingTag(null)}
-          tagId={deletingTag}
         />
       )}
     </SidebarGroup>

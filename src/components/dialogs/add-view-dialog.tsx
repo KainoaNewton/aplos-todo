@@ -97,7 +97,13 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
                     checked={selectedTags.includes(tag.id)}
                     onCheckedChange={() => handleTagToggle(tag.id)}
                   />
-                  <Label htmlFor={tag.id}>{tag.name}</Label>
+                  <Label htmlFor={tag.id} className="flex items-center space-x-2">
+                    <span>{tag.name}</span>
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ backgroundColor: tag.color }}
+                    />
+                  </Label>
                 </div>
               ))}
             </div>
