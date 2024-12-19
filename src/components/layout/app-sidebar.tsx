@@ -9,6 +9,7 @@ import { SettingsDialog } from "@/components/dialogs/settings-dialog";
 import { SidebarMenuItems } from "./sidebar-menu-items";
 import { SidebarViews } from "./sidebar-views";
 import { SidebarTags } from "./sidebar-tags";
+import { Settings } from "lucide-react";
 
 export function AppSidebar() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -22,9 +23,9 @@ export function AppSidebar() {
             <Button
               onClick={() => setIsSettingsOpen(true)}
               variant="ghost"
-              size="sm"
+              size="icon"
             >
-              Settings
+              <Settings className="h-4 w-4" />
             </Button>
           </div>
         </SidebarHeader>
