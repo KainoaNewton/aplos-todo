@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useTodoStore } from "@/store/todo-store";
 import { ThemeColor, ThemeMode } from "@/types/todo";
+import { useEffect } from "react";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -44,13 +45,20 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     });
   };
 
+  // Apply theme changes
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(settings.theme.mode);
+  }, [settings.theme.mode]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label>Theme Mode</Label>
             <Select
