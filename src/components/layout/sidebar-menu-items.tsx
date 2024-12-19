@@ -143,7 +143,7 @@ export function SidebarMenuItems() {
                   onSelect={() => handleCommand(`view-${view.id}`)}
                 >
                   <Eye className="mr-2 h-4 w-4" />
-                  {view.name}
+                  View | {view.name}
                 </CommandItem>
               ))}
               {tags.map((tag) => (
@@ -152,7 +152,7 @@ export function SidebarMenuItems() {
                   onSelect={() => handleCommand(`tag-${tag.id}`)}
                 >
                   <Tag className="mr-2 h-4 w-4" />
-                  {tag.name}
+                  Tag | {tag.name}
                 </CommandItem>
               ))}
             </CommandGroup>

@@ -3,7 +3,7 @@ import { ViewSettingsDialog } from "@/components/dialogs/view-settings-dialog";
 import { TodoItem } from "@/components/todo/todo-item";
 import { Button } from "@/components/ui/button";
 import { useTodoStore } from "@/store/todo-store";
-import { Settings } from "lucide-react";
+import { MoreVertical, Settings } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -34,7 +34,7 @@ const CustomView = () => {
             size="icon"
             onClick={() => setIsSettingsOpen(true)}
           >
-            <Settings className="h-4 w-4" />
+            <MoreVertical className="h-4 w-4" />
           </Button>
           <Button onClick={() => setIsAddTodoOpen(true)}>Add Todo</Button>
         </div>
