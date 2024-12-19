@@ -9,6 +9,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useTodoStore } from "@/store/todo-store";
+import { useToast } from "@/hooks/use-toast";
+import { View } from "@/types/todo";
 
 interface DeleteViewDialogProps {
   open: boolean;
@@ -21,11 +23,34 @@ export function DeleteViewDialog({
   onOpenChange,
   viewId,
 }: DeleteViewDialogProps) {
-  const { deleteView, views } = useTodoStore();
+  const { deleteView, views, addView } = useTodoStore();
+  const { toast } = useToast();
   const view = views.find((v) => v.id === viewId);
 
   const handleDelete = () => {
+    if (!view) return;
+    
+    const deletedView = { ...view };
     deleteView(viewId);
+    
+    toast({
+      title: "View deleted",
+      description: "The view has been deleted",
+      action: (
+        <AlertDialogAction
+          onClick={() => {
+            addView(deletedView);
+            toast({
+              title: "View restored",
+              description: "The view has been restored",
+            });
+          }}
+        >
+          Undo
+        </AlertDialogAction>
+      ),
+    });
+    
     onOpenChange(false);
   };
 

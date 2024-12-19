@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useTodoStore } from "@/store/todo-store";
 import { useState, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface AddViewDialogProps {
   open: boolean;
@@ -27,9 +27,9 @@ export function AddViewDialog({ open, onOpenChange }: AddViewDialogProps) {
   useEffect(() => {
     if (open) {
       setName("");
-      setSelectedTags(tags.length > 0 ? tags.map(tag => tag.id) : []);
+      setSelectedTags([]);
     }
-  }, [open, tags]);
+  }, [open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

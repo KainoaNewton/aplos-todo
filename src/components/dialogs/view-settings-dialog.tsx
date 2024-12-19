@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { DeleteViewDialog } from "./delete-view-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface ViewSettingsDialogProps {
   open: boolean;
