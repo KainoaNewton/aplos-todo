@@ -7,10 +7,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { AddTodoDialog } from "../dialogs/add-todo-dialog";
+import { CommandDialog } from "../ui/command";
 
 export function SidebarMenuItems() {
   const navigate = useNavigate();
   const [isAddTodoOpen, setIsAddTodoOpen] = useState(false);
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
 
   return (
     <>
@@ -26,9 +28,7 @@ export function SidebarMenuItems() {
         </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton
-            onClick={() => {
-              // TODO: Open search modal
-            }}
+            onClick={() => setIsCommandOpen(true)}
             className="w-full"
           >
             <Search className="h-4 w-4" />
@@ -52,6 +52,9 @@ export function SidebarMenuItems() {
         </SidebarMenuItem>
       </SidebarMenu>
       <AddTodoDialog open={isAddTodoOpen} onOpenChange={setIsAddTodoOpen} />
+      <CommandDialog open={isCommandOpen} onOpenChange={setIsCommandOpen}>
+        {/* TODO: Implement command palette content */}
+      </CommandDialog>
     </>
   );
 }

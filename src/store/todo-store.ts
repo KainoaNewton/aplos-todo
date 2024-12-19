@@ -18,6 +18,7 @@ interface TodoState {
   addView: (view: View) => void;
   deleteView: (id: string) => void;
   updateSettings: (settings: Settings) => void;
+  updateTag: (id: string, tag: Tag) => void;
 }
 
 export const useTodoStore = create<TodoState>()(
@@ -89,6 +90,10 @@ export const useTodoStore = create<TodoState>()(
       deleteTag: (id) =>
         set((state) => ({
           tags: state.tags.filter((tag) => tag.id !== id),
+          todos: state.todos.map((todo) => ({
+            ...todo,
+            tags: todo.tags.filter((tagId) => tagId !== id),
+          })),
         })),
       addView: (view) =>
         set((state) => ({
@@ -103,6 +108,10 @@ export const useTodoStore = create<TodoState>()(
       updateSettings: (settings) =>
         set(() => ({
           settings,
+        })),
+      updateTag: (id, updatedTag) =>
+        set((state) => ({
+          tags: state.tags.map((tag) => (tag.id === id ? updatedTag : tag)),
         })),
     }),
     {

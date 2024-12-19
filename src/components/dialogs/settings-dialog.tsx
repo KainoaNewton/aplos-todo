@@ -110,7 +110,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               {DEFAULT_PRESETS.map((preset) => (
                 <button
                   key={preset}
-                  className="h-6 w-6 rounded-md border"
+                  className="h-6 w-6 rounded-md border cursor-pointer hover:ring-2 hover:ring-primary/50"
                   style={{ backgroundColor: preset }}
                   onClick={() => handleColorChange(preset)}
                 />
@@ -121,15 +121,16 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                 {customPresets.map((preset) => (
                   <div key={preset} className="relative group">
                     <button
-                      className="h-6 w-6 rounded-md border"
+                      className="h-6 w-6 rounded-md border cursor-pointer hover:ring-2 hover:ring-primary/50"
                       style={{ backgroundColor: preset }}
                       onClick={() => handleColorChange(preset)}
-                    />
-                    <button
-                      onClick={() => deleteCustomPreset(preset)}
-                      className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <X className="h-3 w-3" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 rounded-md transition-opacity">
+                        <X className="h-4 w-4 text-white" onClick={(e) => {
+                          e.stopPropagation();
+                          deleteCustomPreset(preset);
+                        }} />
+                      </div>
                     </button>
                   </div>
                 ))}

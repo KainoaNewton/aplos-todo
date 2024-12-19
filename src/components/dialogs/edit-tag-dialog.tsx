@@ -8,31 +8,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTodoStore } from "@/store/todo-store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-interface AddTagDialogProps {
+interface EditTagDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  tagId: string;
 }
 
-export function AddTagDialog({ open, onOpenChange }: AddTagDialogProps) {
-  const [name, setName] = useState("");
-  const [color, setColor] = useState("#808080");
-  const addTag = useTodoStore((state) => state.addTag);
+export function EditTagDialog({ open, onOpenChange, tagId }: EditTagDialogProps) {
+  const { tags, updateTag } = useTodoStore();
+  const tag = tags.find((t) => t.id === tagId);
+  const [name, setName] = useState(tag?.name || "");
+  const [color, setColor] = useState(tag?.color || "#808080");
+
+  useEffect(() => {
+    if (tag) {
+      setName(tag.name);
+      setColor(tag.color);
+    }
+  }, [tag]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addTag({ name, color });
-    setName("");
-    setColor("#808080");
-    onOpenChange(false);
+    if (tag) {
+      updateTag(tagId, { ...tag, name, color });
+      onOpenChange(false);
+    }
   };
+
+  if (!tag) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Tag</DialogTitle>
+          <DialogTitle>Edit Tag</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -54,7 +65,7 @@ export function AddTagDialog({ open, onOpenChange }: AddTagDialogProps) {
               required
             />
           </div>
-          <Button type="submit">Add Tag</Button>
+          <Button type="submit">Save Changes</Button>
         </form>
       </DialogContent>
     </Dialog>
