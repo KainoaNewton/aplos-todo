@@ -96,11 +96,18 @@ export const useTodoStore = create<TodoState>()(
           })),
         })),
       addView: (view) =>
-        set((state) => ({
-          views: state.views.map((v) => (v.id === view.id ? view : v)).length > 0
-            ? state.views.map((v) => (v.id === view.id ? view : v))
-            : [...state.views, { ...view, id: crypto.randomUUID() }],
-        })),
+        set((state) => {
+          const existingViewIndex = state.views.findIndex((v) => v.id === view.id);
+          if (existingViewIndex !== -1) {
+            // Update existing view
+            const updatedViews = [...state.views];
+            updatedViews[existingViewIndex] = view;
+            return { views: updatedViews };
+          } else {
+            // Add new view
+            return { views: [...state.views, view] };
+          }
+        }),
       deleteView: (id) =>
         set((state) => ({
           views: state.views.filter((view) => view.id !== id),
