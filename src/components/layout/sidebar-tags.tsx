@@ -41,7 +41,7 @@ export function SidebarTags() {
             <SidebarMenuItem key={tag.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/tag/${tag.id}`)}
-                className="w-full group relative hover:bg-accent"
+                className="w-full group/item relative hover:bg-accent"
               >
                 <div className="flex items-center flex-1">
                   <Tag className="h-4 w-4 mr-2" />
@@ -58,7 +58,7 @@ export function SidebarTags() {
                     e.stopPropagation();
                     setEditingTag(tag.id);
                   }}
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100 absolute right-1 hover:bg-accent"
+                  className="h-6 w-6 opacity-0 group-hover/item:opacity-100 absolute right-1 hover:bg-accent"
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>

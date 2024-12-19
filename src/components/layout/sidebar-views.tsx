@@ -39,7 +39,7 @@ export function SidebarViews() {
             <SidebarMenuItem key={view.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/view/${view.id}`)}
-                className="w-full group relative hover:bg-accent"
+                className="w-full group/item relative hover:bg-accent"
               >
                 <div className="flex items-center flex-1">
                   <ChartNoAxesGantt className="h-4 w-4 mr-2" />
@@ -52,7 +52,7 @@ export function SidebarViews() {
                     e.stopPropagation();
                     setEditingView(view.id);
                   }}
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100 absolute right-1 hover:bg-accent"
+                  className="h-6 w-6 opacity-0 group-hover/item:opacity-100 absolute right-1 hover:bg-accent"
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
