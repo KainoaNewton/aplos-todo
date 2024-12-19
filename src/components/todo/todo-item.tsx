@@ -7,6 +7,7 @@ import { useTodoStore } from "@/store/todo-store";
 import { Todo } from "@/types/todo";
 import { Edit2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface TodoItemProps {
   todo: Todo;
@@ -17,6 +18,18 @@ export function TodoItem({ todo }: TodoItemProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
   const [editTag, setEditTag] = useState(todo.tags[0] || "");
+
+  const handleToggle = () => {
+    if (!todo.completed) {
+      toast("Todo marked as done", {
+        action: {
+          label: "Undo",
+          onClick: () => toggleTodo(todo.id),
+        },
+      });
+    }
+    toggleTodo(todo.id);
+  };
 
   const handleEdit = () => {
     updateTodo(todo.id, {
@@ -32,7 +45,7 @@ export function TodoItem({ todo }: TodoItemProps) {
       <div className="flex items-center space-x-4 rounded-lg border bg-card p-4 shadow-sm">
         <Checkbox
           checked={todo.completed}
-          onCheckedChange={() => toggleTodo(todo.id)}
+          onCheckedChange={handleToggle}
         />
         <span className={todo.completed ? "line-through" : ""}>{todo.title}</span>
         <div className="ml-auto flex items-center space-x-2">
