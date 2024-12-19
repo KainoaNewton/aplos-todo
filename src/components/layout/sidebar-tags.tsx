@@ -21,7 +21,7 @@ export function SidebarTags() {
   return (
     <SidebarGroup>
       <div className="flex items-center justify-between px-4">
-        <SidebarGroupLabel>Tags</SidebarGroupLabel>
+        <SidebarGroupLabel className="text-sm font-medium">Tags</SidebarGroupLabel>
         <Button
           variant="ghost"
           size="icon"
@@ -36,7 +36,7 @@ export function SidebarTags() {
             <SidebarMenuItem key={tag.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/tag/${tag.id}`)}
-                className="w-full"
+                className="w-full pl-6"
               >
                 <span
                   className="h-2 w-2 rounded-full"

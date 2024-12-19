@@ -14,8 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTodoStore } from "@/store/todo-store";
-import { ThemeColor, ThemeMode } from "@/types/todo";
+import { ThemeMode } from "@/types/todo";
 import { useEffect } from "react";
+import { HexColorPicker } from "react-colorful";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -35,7 +36,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     });
   };
 
-  const handleColorChange = (color: ThemeColor) => {
+  const handleColorChange = (color: string) => {
     updateSettings({
       ...settings,
       theme: {
@@ -43,6 +44,14 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
         color,
       },
     });
+
+    // Update CSS variables
+    const root = document.documentElement;
+    const hsl = hexToHSL(color);
+    root.style.setProperty("--primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--sidebar-primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--sidebar-ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
   };
 
   // Apply theme changes
@@ -50,6 +59,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     const root = window.document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(settings.theme.mode);
+    handleColorChange(settings.theme.color);
   }, [settings.theme.mode]);
 
   return (
@@ -76,22 +86,55 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </div>
           <div className="space-y-2">
             <Label>Accent Color</Label>
-            <Select
-              value={settings.theme.color}
-              onValueChange={(value) => handleColorChange(value as ThemeColor)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="blue">Blue</SelectItem>
-                <SelectItem value="purple">Purple</SelectItem>
-                <SelectItem value="green">Green</SelectItem>
-              </SelectContent>
-            </Select>
+            <HexColorPicker
+              color={settings.theme.color}
+              onChange={handleColorChange}
+            />
           </div>
         </div>
       </DialogContent>
     </Dialog>
   );
+}
+
+// Helper function to convert hex to HSL
+function hexToHSL(hex: string) {
+  // Remove the hash if it exists
+  hex = hex.replace(/^#/, '');
+
+  // Parse the hex values
+  const r = parseInt(hex.slice(0, 2), 16) / 255;
+  const g = parseInt(hex.slice(2, 4), 16) / 255;
+  const b = parseInt(hex.slice(4, 6), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+
+    h /= 6;
+  }
+
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+  };
 }

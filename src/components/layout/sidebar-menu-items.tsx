@@ -1,4 +1,4 @@
-import { Plus, Search, Inbox, Settings } from "lucide-react";
+import { Plus, Search, Inbox, Archive } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -18,7 +18,7 @@ export function SidebarMenuItems() {
         <SidebarMenuItem>
           <SidebarMenuButton
             onClick={() => setIsAddTodoOpen(true)}
-            className="w-full"
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" />
             <span>Add Todo</span>
@@ -39,6 +39,15 @@ export function SidebarMenuItems() {
           <SidebarMenuButton onClick={() => navigate("/")} className="w-full">
             <Inbox className="h-4 w-4" />
             <span>Inbox</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            onClick={() => navigate("/archive")}
+            className="w-full"
+          >
+            <Archive className="h-4 w-4" />
+            <span>Archive</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

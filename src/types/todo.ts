@@ -1,37 +1,30 @@
-export type Tag = {
+export interface Tag {
   id: string;
   name: string;
   color: string;
-};
+}
 
-export type Todo = {
+export interface Todo {
   id: string;
   title: string;
   completed: boolean;
-  dueDate?: Date;
   tags: string[];
   createdAt: Date;
-};
+}
 
-export type View = {
+export interface View {
   id: string;
   name: string;
   filter: {
     tags?: string[];
-    dateRange?: {
-      start?: Date;
-      end?: Date;
-    };
-    completed?: boolean;
   };
-};
+}
 
-export type ThemeColor = "blue" | "purple" | "green";
 export type ThemeMode = "light" | "dark";
 
-export type Settings = {
+export interface Settings {
   theme: {
     mode: ThemeMode;
-    color: ThemeColor;
+    color: string;
   };
-};
+}

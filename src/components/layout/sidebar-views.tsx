@@ -21,7 +21,7 @@ export function SidebarViews() {
   return (
     <SidebarGroup>
       <div className="flex items-center justify-between px-4">
-        <SidebarGroupLabel>Views</SidebarGroupLabel>
+        <SidebarGroupLabel className="text-sm font-medium">Views</SidebarGroupLabel>
         <Button
           variant="ghost"
           size="icon"
@@ -36,7 +36,7 @@ export function SidebarViews() {
             <SidebarMenuItem key={view.id}>
               <SidebarMenuButton
                 onClick={() => navigate(`/view/${view.id}`)}
-                className="w-full"
+                className="w-full pl-6"
               >
                 <span>{view.name}</span>
               </SidebarMenuButton>

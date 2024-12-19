@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/layout/app-sidebar";
 import Index from "./pages/Index";
 import TagView from "./pages/TagView";
 import CustomView from "./pages/CustomView";
+import Archive from "./pages/Archive";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/tag/:tagId" element={<TagView />} />
                 <Route path="/view/:viewId" element={<CustomView />} />
+                <Route path="/archive" element={<Archive />} />
               </Routes>
             </main>
           </div>
