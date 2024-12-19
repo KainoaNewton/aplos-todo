@@ -92,4 +92,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  [data-active="true"] {
+    @apply bg-sidebar-accent text-sidebar-accent-foreground;
+  }
 }
