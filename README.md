@@ -1,5 +1,5 @@
 # Aplos Todo
-A Simple, easy to use, elegent todo wep app.
+A Simple, easy to use, elegent todo list wep app.
 
 ## Project Info
 
