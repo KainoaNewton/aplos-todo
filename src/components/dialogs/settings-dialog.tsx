@@ -17,7 +17,7 @@ import { useTodoStore } from "@/store/todo-store";
 import { ThemeMode } from "@/types/todo";
 import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Monitor, Sun, Moon } from "lucide-react";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -36,6 +36,24 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { settings, updateSettings } = useTodoStore();
   const [customPresets, setCustomPresets] = useState<string[]>([]);
 
+  const getSystemTheme = () => {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  };
+
+  const applyTheme = (mode: ThemeMode, color: string) => {
+    const root = document.documentElement;
+    const effectiveMode = mode === "system" ? getSystemTheme() : mode;
+    
+    root.classList.remove("light", "dark");
+    root.classList.add(effectiveMode);
+    
+    const hsl = hexToHSL(color);
+    root.style.setProperty("--primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--sidebar-primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    root.style.setProperty("--sidebar-ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+  };
+
   const handleModeChange = (mode: ThemeMode) => {
     updateSettings({
       ...settings,
@@ -44,6 +62,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
         mode,
       },
     });
+    applyTheme(mode, settings.theme.color);
   };
 
   const handleColorChange = (color: string) => {
@@ -54,14 +73,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
         color,
       },
     });
-
-    // Update CSS variables
-    const root = document.documentElement;
-    const hsl = hexToHSL(color);
-    root.style.setProperty("--primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
-    root.style.setProperty("--sidebar-primary", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
-    root.style.setProperty("--ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
-    root.style.setProperty("--sidebar-ring", `${hsl.h} ${hsl.s}% ${hsl.l}%`);
+    applyTheme(settings.theme.mode, color);
   };
 
   const addCustomPreset = () => {
@@ -74,86 +86,134 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     setCustomPresets(customPresets.filter((p) => p !== preset));
   };
 
-  // Apply theme changes
+  // Apply theme changes and listen for system theme changes
   useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(settings.theme.mode);
-    handleColorChange(settings.theme.color);
-  }, [settings.theme.mode]);
+    applyTheme(settings.theme.mode, settings.theme.color);
+    
+    if (settings.theme.mode === "system") {
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+      const handleChange = () => {
+        applyTheme("system", settings.theme.color);
+      };
+      
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+  }, [settings.theme.mode, settings.theme.color]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Settings</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">Settings</DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label>Theme Mode</Label>
-            <Select
-              value={settings.theme.mode}
-              onValueChange={(value) => handleModeChange(value as ThemeMode)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>Accent Color</Label>
-            <div className="grid grid-cols-5 gap-2">
-              {DEFAULT_PRESETS.map((preset) => (
-                <button
-                  key={preset}
-                  className="h-6 w-6 rounded-md border cursor-pointer hover:ring-2 hover:ring-primary/50"
-                  style={{ backgroundColor: preset }}
-                  onClick={() => handleColorChange(preset)}
-                />
-              ))}
+        <div className="space-y-6 py-4">
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Theme</Label>
+            <div className="grid grid-cols-3 gap-2">
+              <Button
+                variant={settings.theme.mode === "light" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleModeChange("light")}
+                className="flex flex-col items-center gap-1 h-auto py-3"
+              >
+                <Sun className="h-4 w-4" />
+                <span className="text-xs">Light</span>
+              </Button>
+              <Button
+                variant={settings.theme.mode === "dark" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleModeChange("dark")}
+                className="flex flex-col items-center gap-1 h-auto py-3"
+              >
+                <Moon className="h-4 w-4" />
+                <span className="text-xs">Dark</span>
+              </Button>
+              <Button
+                variant={settings.theme.mode === "system" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleModeChange("system")}
+                className="flex flex-col items-center gap-1 h-auto py-3"
+              >
+                <Monitor className="h-4 w-4" />
+                <span className="text-xs">System</span>
+              </Button>
             </div>
-            {customPresets.length > 0 && (
-              <div className="mt-2 grid grid-cols-5 gap-2">
-                {customPresets.map((preset) => (
-                  <div key={preset} className="relative group">
-                    <button
-                      className="h-6 w-6 rounded-md border cursor-pointer hover:ring-2 hover:ring-primary/50"
-                      style={{ backgroundColor: preset }}
-                      onClick={() => handleColorChange(preset)}
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="absolute inset-0 bg-black/50 rounded-md" />
-                        <X 
-                          className="h-4 w-4 text-white relative z-10" 
+          </div>
+          
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Accent Color</Label>
+            <div className="space-y-3">
+              <div className="grid grid-cols-8 gap-2">
+                {DEFAULT_PRESETS.map((preset) => (
+                  <button
+                    key={preset}
+                    className={`h-8 w-8 rounded-lg border-2 cursor-pointer transition-all hover:scale-110 ${
+                      settings.theme.color === preset 
+                        ? "border-foreground scale-110" 
+                        : "border-border hover:border-foreground/50"
+                    }`}
+                    style={{ backgroundColor: preset }}
+                    onClick={() => handleColorChange(preset)}
+                  />
+                ))}
+              </div>
+              
+              {customPresets.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">Custom Colors</Label>
+                  <div className="grid grid-cols-8 gap-2">
+                    {customPresets.map((preset) => (
+                      <div key={preset} className="relative group">
+                        <button
+                          className={`h-8 w-8 rounded-lg border-2 cursor-pointer transition-all hover:scale-110 ${
+                            settings.theme.color === preset 
+                              ? "border-foreground scale-110" 
+                              : "border-border hover:border-foreground/50"
+                          }`}
+                          style={{ backgroundColor: preset }}
+                          onClick={() => handleColorChange(preset)}
+                        />
+                        <button
+                          className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-background border border-border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive hover:border-destructive"
                           onClick={(e) => {
                             e.stopPropagation();
                             deleteCustomPreset(preset);
-                          }} 
-                        />
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       </div>
-                    </button>
+                    ))}
                   </div>
-                ))}
+                </div>
+              )}
+              
+              <div className="space-y-2">
+                <HexColorPicker
+                  color={settings.theme.color}
+                  onChange={handleColorChange}
+                  className="w-full !h-32"
+                />
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="h-8 w-8 rounded-lg border"
+                    style={{ backgroundColor: settings.theme.color }}
+                  />
+                  <span className="text-sm font-mono">{settings.theme.color}</span>
+                </div>
               </div>
-            )}
-            <HexColorPicker
-              color={settings.theme.color}
-              onChange={handleColorChange}
-              className="w-full"
-            />
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-2 w-full"
-              onClick={addCustomPreset}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Save as Preset
-            </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={addCustomPreset}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Save Current Color
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>

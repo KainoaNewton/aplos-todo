@@ -20,7 +20,7 @@ export interface View {
   };
 }
 
-export type ThemeMode = "light" | "dark";
+export type ThemeMode = "light" | "dark" | "system";
 
 export interface Settings {
   theme: {
