@@ -30,7 +30,7 @@ export const useTodoStore = create<TodoState>()(
       views: [],
       settings: {
         theme: {
-          mode: "light",
+          mode: "system",
           color: "#8B5CF6",
         },
       },
